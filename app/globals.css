@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-quicksand), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-baloo), var(--font-quicksand), ui-sans-serif, sans-serif;
+
+  /* Ink */
+  --color-ink: #2b2340;
+  --color-ink-soft: #6f6a85;
+  --color-ink-faint: #9d99ab;
+
+  /* Surfaces */
+  --color-surface: #f7f6fb;
+  --color-line: #eceaf4;
+
+  /* Brand violet */
+  --color-brand: #7c3aed;
+  --color-brand-bright: #8b5cf6;
+  --color-brand-soft: #ede9fe;
+  --color-brand-tint: #f5f2ff;
+
+  /* Accents */
+  --color-sun: #fbbf24;
+  --color-sun-soft: #fde68a;
+  --color-amber-soft: #fdf0cd;
+  --color-amber-ink: #f0a020;
+  --color-mint: #2fa36b;
+  --color-mint-soft: #d8f5e3;
+  --color-pink: #db2777;
+  --color-pink-soft: #fce7f3;
+  --color-sky: #2563eb;
+  --color-sky-soft: #deeafd;
+  --color-danger: #ef4444;
+  --color-danger-soft: #fee2e2;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #efedf4;
+  color: #2b2340;
+  font-family: var(--font-quicksand), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Installed app only.
+ *
+ * The viewport is `viewport-fit=cover` so the screen can paint under the notch,
+ * which means the shell has to add the insets back. Outside standalone mode the
+ * class is inert, so the browser version keeps its phone frame. `background` on
+ * the padded box is what makes the notch strip match the app instead of the grey
+ * page background.
+ */
+@media (display-mode: standalone) {
+  .pwa-safe-insets {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  body {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
 }

@@ -1,0 +1,191 @@
+# app.md — Project diary
+
+> **How to use this file:** it is the running history of this project. Every agent
+> must **read it before starting** and **append a new entry when a task is done**.
+> Use the newest entry at the bottom. Be honest — record what failed, what is
+> unverified, and what is left open. See `AGENT.md` for the full rules.
+
+---
+
+## 2026-10-09 — Build the AutoMate onboarding screen from a design reference
+
+**Request.** Recreate the attached onboarding screen ("first screen.png") in
+Next.js + TypeScript with the same UI, fonts and colours.
+
+**Stack.** Next.js 16.4 (App Router, Turbopack), React 19, TypeScript strict,
+Tailwind CSS v4 (`@tailwindcss/turbopack`, configured via `next.config.ts`).
+
+### What was built
+
+The stock create-next-app page was replaced with the onboarding screen.
+
+| File | Purpose |
+| --- | --- |
+| `app/globals.css` | Tailwind v4 `@theme inline` tokens: AutoMate palette + font vars. Dark-mode override removed (design is light-only). |
+| `app/layout.tsx` | `next/font/google` — Baloo 2 (`--font-baloo`, display) + Quicksand (`--font-quicksand`, body). AutoMate metadata. |
+| `app/page.tsx` | The screen: brand bar, headline, intro, illustration, three value props, pagination, CTA, footer link. |
+| `components/automate-logo.tsx` | The violet four-point bloom with a yellow bolt. |
+| `components/decorations.tsx` | Hand-drawn flourishes: `SlashMarks`, `Squiggle`, `UnderlineSwoosh`. |
+| `components/icons.tsx` | Line-art icons: `ArrowRight`, `ChevronRight`, `Bolt`, `Wand`, `GrowChart`. |
+| `components/onboarding-illustration.tsx` | The whole doodle scene as one inline SVG. |
+| `AGENT.md` | Rules every agent must read before working here. |
+| `app.md` | This diary. |
+
+### Fonts and colours (the interesting decisions)
+
+- Heading/wordmark/CTA use **Baloo 2** (chunky, rounded, playful); body copy uses
+  **Quicksand** (geometric rounded). Both are Google variable fonts, self-hosted
+  by `next/font` — no runtime request to Google.
+- Palette read off the reference: violet `#7c3aed` (with `#8b5cf6` for the CTA
+  gradient), ink `#2b2340`, muted ink `#6f6a85`, sun yellow `#fbbf24`, lavender
+  cloud `#ede9fc`, mint `#2fa36b`, amber `#f0a020`.
+
+### The illustration
+
+There was no asset to import, so the doodle scene was rebuilt by hand as a single
+inline SVG (viewBox `0 0 360 234`): a lavender cloud made of overlapping
+ellipses, dashed arrows with an SVG marker arrowhead, six app cards (Instagram,
+Notion, Gmail, Slack, Google Sheets, WhatsApp), a paper-plane dart, sparkles, and
+the mascot (raised arm, blush, crown, violet laptop with a yellow bolt). The Gmail
+mark uses Google's official 5-path colour geometry; the others are simplified to
+read clearly at ~50 px.
+
+### Corrections made during the task
+
+1. **Removed the iOS status bar.** The first pass included a 9:41 / signal / wifi /
+   battery row copied from the reference image. The user pointed out this is an
+   **app screen, not a phone mockup**, so the row and `components/status-bar.tsx`
+   were deleted. This also bought ~40 px of vertical space. Recorded as a rule in
+   `AGENT.md` §3.
+2. **Vertical fit.** The first render was 921 px tall, so the footer fell below the
+   fold. Spacing, the four-line headline's leading and the intro paragraph were
+   tightened so the whole screen fits in one phone viewport (393 × 852).
+3. **Intro paragraph** was wrapping to three lines; it is now the two lines of the
+   reference. The line break after "…set your rules," is explicit (`<br />`) because
+   natural wrapping put "and" on the first line at this width.
+4. **Paper plane** first rendered as a flat kite. It is now built as the classic
+   two-facet send-dart and rotated -135° so the nose points up-left like the
+   reference.
+5. **Docs.** `AGENT.md` (mandatory rules) and `app.md` (this diary) were added at
+   the user's request.
+6. **Mascot's mouth** was a small dark oval that read as a nose. It is now a wide
+   open smile, which is what the reference shows.
+
+### Verification
+
+- `bunx tsc --noEmit` — passes.
+- `bun run lint` — passes.
+- `bun run build` — passes; `/` prerenders as static.
+- All three were re-run **after** the final illustration edit, not only before it.
+- Browser console — clean (only the React DevTools notice and HMR logs).
+- Measured in the browser at 393 × 852: `scrollHeight` is exactly 852 and
+  `scrollWidth` 393, so the screen fills one phone viewport with no scrolling and
+  nothing clipped. Logo at (24, 20) 42×42, wordmark at x=76, headline 345 px wide
+  starting at y=96.
+- A dev server was already running on port 3000 for this project (started by the
+  user), so that instance was reused instead of starting a second one. It restarted
+  once mid-task; the page was reloaded and re-verified after.
+
+### Still open
+
+- The `Log In` link points at `/login`, which does not exist yet.
+- `Skip` and `Get Started Free` are non-functional buttons (no destination wired).
+- The screen is page one of three; the two pagination dots after it have no
+  screens behind them yet.
+- Pixel-level differences remain in the doodle (the mascot and brand marks are
+  hand-drawn approximations of the reference art, not the original asset).
+- `AGENT.md` was written by the agent on the user's behalf — the user should review
+  and adjust the rules, since it is meant to be *their* rulebook.
+- Not checked on a real device or in Safari/Firefox; only Chromium at 393 × 852.
+
+---
+
+## 2026-10-09 — Build the social-automation app (16 more screens)
+
+**Request.** "Create these screens in Next.js — this is a social media automation
+app after all." Reference: `2.png`, a 16-screen sheet. One brand decision was
+taken up front with the user: the mockup's "Better WebStack" welcome screen was
+**restyled as AutoMate** rather than introducing a second brand.
+
+### What was built
+
+16 screens, plus an index, all statically prerendered:
+
+| # | Route | Screen |
+| --- | --- | --- |
+| 02 | `/welcome` | Welcome — crown doodle, outlined "Mate", social glyphs, black CTA |
+| 03 | `/signup` | Create your account — fields, Google/Apple OAuth |
+| 04 | `/connect` | Connect social accounts — Instagram + Messenger cards |
+| 05 | `/home` | Dashboard — 4 stat tiles, today's activity |
+| 06 | `/automations` | Automation library with Use actions |
+| 07 | `/automations/select-post` | Pick the trigger post |
+| 08 | `/automations/new` | Trigger + action builder, active toggle |
+| 09 | `/automations/flow` | Step diagram with connectors |
+| 10 | `/inbox` | Conversation list |
+| 11 | `/inbox/[id]` | Chat thread with link-preview card |
+| 12 | `/leads` | Leads with status pills |
+| 13 | `/analytics` | Metrics + area chart with tooltip |
+| 14 | `/broadcast` | Broadcast message composer |
+| 15 | `/schedule` | Active hours, days, timezone |
+| 16 | `/notifications` | Activity + system feed |
+| 17 | `/profile` | Account menu, theme toggle, log out |
+
+The onboarding screen at `/` was kept and its CTAs were wired up:
+Skip → `/home`, Get Started Free → `/welcome`, Log In → `/signup`.
+
+New files: `lib/data.ts` (typed mock data + a single `Tint` → Tailwind class
+map), `components/app/line-icons.tsx`, `components/app/form-icons.tsx`,
+`components/app/shell.tsx`, `components/app/ui.tsx`, `components/app/bottom-nav.tsx`,
+and one `page.tsx` per route.
+
+### Decisions worth remembering
+
+- **One tint map.** Every coloured surface (stat tiles, icon squares, badges,
+avatars) resolves through `tintClasses` in `lib/data.ts`, so the palette stays
+consistent and re-theming is a one-file change.
+- **The bottom nav's fourth slot is contextual** — it shows Automations normally
+and swaps to Leads on `/leads`, matching the reference sheet. Done in
+`bottom-nav.tsx` with `usePathname`.
+- **No status bar anywhere**, per `AGENT.md` §3.
+- Tabs, toggles, chips, post selection and the audience radios are interactive
+  (client components) but do not filter or persist data — they are prototype
+  affordances, not wired behaviour.
+
+### Bugs found and fixed during the task
+
+1. **Missing colour utilities.** `bg-pink-soft` and `bg-sky-soft` rendered as
+   transparent. The tokens were correct in the source **and present in the
+   production CSS** — the *dev server* had compiled `app/globals.css` before the
+   new tokens existed and never recompiled the theme. Verified by grepping both
+   the dev-served CSS (missing) and `.next/static/chunks/*.css` (present), then
+   re-checked against a production server on :3100, where all four flow cards
+   reported the right `rgb()` backgrounds. **If tints disappear, restart the dev
+   server before changing any code.**
+2. **Stale generated route types.** `PageProps<"/inbox/[id]">` failed to compile
+   because `.next/types/routes.d.ts` still listed only `/`. Running a build (or
+   hitting the dev server) regenerates it.
+3. A doodle arrow overlapped the welcome copy; the doodle was moved and resized.
+4. Sign-up's terms line was pinned to the bottom of the screen; it now sits under
+   the Apple button, as in the reference.
+5. `StatCard` gained a `positive` flag so a *falling* response time still reads as
+   good news (green), like the reference.
+
+### Verification
+
+- `bunx tsc --noEmit` — passes. `bun run lint` — passes. `bun run build` — passes.
+- All 18 routes return 200 from both a dev server and a production server.
+- Visually checked at 393 × 852 and compared with the reference sheet: welcome,
+  sign-up, home, conversation, analytics, automation flow, leads, create
+  automation, notifications, profile.
+- The remaining screens were confirmed by server-rendered content checks and the
+  build (they were not eyeballed pixel-by-pixel).
+
+### Still open
+
+- Nothing is persisted: forms, toggles, tabs and buttons are UI only. No API, no
+  auth, no database.
+- `/` (AutoMate onboarding) and `/welcome` are two welcome-ish screens back to
+  back. The user chose to keep both; the flow is onboarding → welcome → sign-up.
+- `src`-less link previews and menu rows point at `#`.
+- The reference sheet draws a phone frame and iOS status bar around every screen.
+  Those are deliberately not implemented.
