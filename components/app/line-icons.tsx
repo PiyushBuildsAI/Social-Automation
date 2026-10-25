@@ -184,6 +184,20 @@ export const CheckIcon = ({ className }: IconProps) => (
   </Stroke>
 );
 
+export const DownloadIcon = ({ className }: IconProps) => (
+  <Stroke className={className}>
+    <path d="M12 3.5v11M7.5 10.5 12 15l4.5-4.5" />
+    <path d="M4.5 16.5v2A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-2" />
+  </Stroke>
+);
+
+export const RefreshIcon = ({ className }: IconProps) => (
+  <Stroke className={className}>
+    <path d="M20 7v5h-5" />
+    <path d="M19.2 12a7.2 7.2 0 1 1-1.7-4.7L20 12" />
+  </Stroke>
+);
+
 export const TrendingUp = ({ className }: IconProps) => (
   <svg viewBox="0 0 24 24" aria-hidden className={className} fill="currentColor">
     <path d="M3.5 18.5h3v-5h-3v5Zm5 0h3V9.5h-3v9Zm5 0h3v-7h-3v7Zm5 0h3V5.5h-3v13Z" opacity="0.45" />

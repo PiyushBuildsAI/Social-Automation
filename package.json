@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,8 @@
     "build:mobile-web": "bash scripts/build-mobile-web.sh",
     "cap:sync": "cap sync android",
     "android": "cap open android",
-    "apk": "bash scripts/build-apk.sh"
+    "apk": "bash scripts/build-apk.sh",
+    "release:apk": "bash scripts/release-apk.sh"
   },
   "dependencies": {
     "@capacitor/android": "6.2.2",

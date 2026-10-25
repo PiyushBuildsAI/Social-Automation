@@ -36,6 +36,9 @@ for tool in "$BUILD_TOOLS/zipalign" "$BUILD_TOOLS/apksigner"; do
 done
 
 if [ "${SKIP_WEB:-0}" != "1" ]; then
+  # Never let a test-only AUTOMATE_APP_VERSION override leak into a real APK;
+  # the web bundle must use the same versionName as the Gradle build.
+  unset AUTOMATE_APP_VERSION
   bash scripts/build-mobile-web.sh
 fi
 

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { BottomNav } from "@/components/app/bottom-nav";
 import { ScreenShell } from "@/components/app/shell";
+import { UpdateBanner } from "@/components/app/update-card";
 import {
   BellIcon,
   ChatIcon,
@@ -12,6 +13,7 @@ import {
   UserPlusIcon,
 } from "@/components/app/line-icons";
 import { activity, stats, tintClasses, type Tint } from "@/lib/data";
+import { isMobileDemo } from "@/lib/mobile";
 import { requireSession } from "@/lib/session";
 
 const statIcons = [
@@ -50,6 +52,8 @@ export default async function HomeScreen() {
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-brand" />
           </Link>
         </div>
+
+        {isMobileDemo ? <UpdateBanner /> : null}
 
         <div className="mt-5 grid grid-cols-2 gap-3">
           {stats.map((stat, i) => (

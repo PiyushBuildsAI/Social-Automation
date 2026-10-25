@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { Crown } from "@/components/automate-logo";
 import { ScreenHeader, ScreenShell } from "@/components/app/shell";
 import { Toggle } from "@/components/app/ui";
+import { UpdateCard } from "@/components/app/update-card";
 import {
   BellIcon,
   BoltIcon,
@@ -18,6 +19,7 @@ import {
 } from "@/components/app/line-icons";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
+import { isMobileDemo } from "@/lib/mobile";
 import { requireSession } from "@/lib/session";
 
 const rows: { label: string; hint: string; href?: string; icon: ReactNode }[] = [
@@ -155,6 +157,8 @@ export default async function ProfileScreen() {
             );
           })}
         </ul>
+
+        {isMobileDemo ? <UpdateCard /> : null}
 
         <InstallPrompt />
 

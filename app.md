@@ -285,3 +285,84 @@ in-app notifications only; the phone must not need a server.
 - GitHub release `v0.2.0`, asset `automate-v0.2.0.apk`.
 - Next.js 16.4.0 is affected by a security advisory; upgrade to 16.4.3 before
   exposing the server build to untrusted traffic.
+
+---
+
+## 2026-10-25 — In-app update check (v0.3.0)
+
+**Request.** Add update logic so a newer pushed build can be discovered by an
+installed AutoMate APK, with the prompt matching the existing AutoMate UI.
+
+### What was built
+
+- **Version handoff.** `lib/version.ts` exposes `APP_VERSION`. The mobile web
+  build reads `versionName` from `android/app/build.gradle` and injects it as
+  `NEXT_PUBLIC_APP_VERSION`, so the checker and the installed APK agree.
+  `AUTOMATE_APP_VERSION` is a test-only override.
+- **Release checker.** `lib/updates.ts` calls
+  `https://api.github.com/repos/PiyushBuildsAI/Social-Automation/releases/latest`,
+  parses `tag_name`, picks the `.apk` asset, and compares it with the installed
+  version. Results are cached for five minutes to stay well below GitHub's
+  unauthenticated rate limit; errors are not cached so retry works immediately.
+  The check also reruns when the app returns to the foreground.
+  Error states cover offline, timeout, GitHub rate limiting, a missing release,
+  and a release with no APK.
+- **Home prompt.** `UpdateBanner` appears under the Home header only when a newer
+  release exists. It shows the new version in a brand pill, offers
+  “Download update”, and can be dismissed with “Later”. The dismissal is stored
+  per version in `localStorage`, so a future release returns the prompt.
+- **Profile card.** `UpdateCard` is a persistent “App updates” row added below
+  the settings list. It shows the current version, checking/up-to-date/available/
+  error states, a manual “Check again” action, a direct APK download, and a
+  “What’s new” link to the GitHub release. It is gated by `isMobileDemo`, so the
+  normal web UI is unchanged.
+- **Icons.** Added download and refresh line icons to the existing icon set.
+- **Release helper.** `scripts/release-apk.sh` (`bun run release:apk`) checks that
+  `package.json` and Gradle versions match, requires a clean tree, builds/signs
+  the APK, and creates the GitHub release with the APK and checksum attached.
+- **Version bump.** `0.3.0` (`versionCode 3`) in `package.json` and
+  `android/app/build.gradle`.
+
+### Verification
+
+- `bunx tsc --noEmit` — passes.
+- `bun run lint` — passes.
+- `bun run build` — passes after Next's one-time security-advisory pause/retry.
+- Live API check from Bun: `0.1.0` → update available (`v0.2.0` APK URL);
+  `0.3.0` → current.
+- Static mobile export tested in Chromium at phone width:
+  - With `AUTOMATE_APP_VERSION=0.1.9`: Home showed the update banner and Profile
+    showed “Download v0.2.0”; the direct APK URL and release URL were correct.
+  - “Later” hid the banner and the dismissal survived a reload.
+  - With `AUTOMATE_APP_VERSION=0.3.0`: Home showed no banner and Profile showed
+    “You're on the latest version of AutoMate.”
+  - Simulated fetch failure: Profile showed the error message and “Try again”.
+  - No console errors in any state.
+- `bun run apk` — builds a signed APK:
+  - `dist/automate-v0.3.0.apk` (4.1 MB)
+  - `versionCode 3`, `versionName 0.3.0`, target SDK 34, min SDK 22
+  - v1/v2/v3 signatures verify
+  - SHA-256
+    `9a2ea7f6ba20159f8352b3943cd9de2bab829c86e30b2efd64867a33096eb363`
+  - The bundled JS contains `0.3.0`, `releases/latest`, and the update card copy.
+
+### Failed / unverified
+
+- **No Android runtime test.** No physical device is attached, and the
+  `automate-test` AVD crashes with `SIGSEGV` during startup on this host. The
+  external-browser APK download and Android package-install step were not
+  exercised on a device.
+- **No release published for v0.3.0 yet.** The latest public release is still
+  `v0.2.0`, so the local v0.3.0 build correctly reports itself as current. The
+  update-available UI was tested with a temporary 0.1.9 bundle against the live
+  v0.2.0 release.
+- **Pushing code alone does not update an installed APK.** A new signed release
+  must be published. `bun run release:apk` does that after the version bump is
+  committed and pushed. Automatic release-on-push (GitHub Actions + signing
+  secrets) is not set up.
+- **v0.2.0 has no update checker.** It cannot discover v0.3.0. Install v0.3.0
+  manually first; the in-app prompt will work for releases after that (for
+  example v0.3.1).
+- The APK opens the downloaded APK in the phone browser; there is no in-app
+  native package-installer flow or OTA web-bundle update.
+- Next.js 16.4.0 security advisory remains; a patched 16.4.3 is available.

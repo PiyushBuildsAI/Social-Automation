@@ -30,7 +30,7 @@ bun install
 bun run apk        # build static export, sync, compile and sign
 ```
 
-Output: `dist/automate-v0.2.0.apk` plus a `.sha256` file. The release signing key
+Output: `dist/automate-v0.3.0.apk` plus a `.sha256` file. The release signing key
 is kept outside the repo at `~/.android/automate-release.jks` (password in
 `~/.android/automate-release-password`); keep both to publish future updates.
 
@@ -41,6 +41,27 @@ Studio.
 The APK is a demo: it uses a bundled demo session, has no real login/API/SQLite,
 and its notification feed is in-app only. Real push notifications require an FCM
 (or web-push) backend.
+
+## In-app updates
+
+The APK checks the public latest release at
+`https://api.github.com/repos/PiyushBuildsAI/Social-Automation/releases/latest`
+when Home or Profile loads. It compares the release tag with the `versionName`
+baked into the APK, and shows the update prompt only when a newer APK is
+available. The download opens the APK in the phone's browser; the user then
+opens the file to install it.
+
+Pushing source code alone does not change an installed APK. To ship an update:
+
+1. Bump `version` in `package.json` and both `versionCode` / `versionName` in
+   `android/app/build.gradle`.
+2. Commit and push the version bump.
+3. Run `bun run release:apk` — it builds and signs the APK, then creates the
+   next GitHub release with the APK and checksum attached.
+
+The mobile web build injects the Gradle `versionName` into the bundle, so the
+checker and the APK always agree. The update UI is gated by `isMobileDemo`, so
+the normal web build is unchanged.
 
 ## Learn More
 

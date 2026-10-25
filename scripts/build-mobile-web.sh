@@ -16,6 +16,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+# The web bundle and the APK must agree on the installed version. Read it from
+# Gradle, unless a test build explicitly overrides it (for example
+# AUTOMATE_APP_VERSION=0.1.9 to preview the update prompt).
+APP_VERSION="${AUTOMATE_APP_VERSION:-$(sed -n 's/.*versionName "\(.*\)".*/\1/p' android/app/build.gradle | head -1)}"
+APP_VERSION="${APP_VERSION:-0.0.0}"
+export NEXT_PUBLIC_APP_VERSION="$APP_VERSION"
+
 BACKUP="$(mktemp -d)"
 restore() {
   if [ -f "$BACKUP/layout.tsx" ] && [ -f app/layout.tsx ]; then
@@ -53,7 +60,8 @@ if [ -d "$RETRY_CACHE" ]; then
 fi
 
 run_build() {
-  MOBILE_EXPORT=1 MOBILE_DEMO=1 NEXT_PUBLIC_MOBILE_DEMO=1 ./node_modules/.bin/next build
+  MOBILE_EXPORT=1 MOBILE_DEMO=1 NEXT_PUBLIC_MOBILE_DEMO=1 \
+    NEXT_PUBLIC_APP_VERSION="$APP_VERSION" ./node_modules/.bin/next build
 }
 
 if ! run_build; then
