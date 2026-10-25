@@ -65,8 +65,8 @@ run_build() {
 }
 
 if ! run_build; then
-  # Next 16.4.0 pauses once per fresh build to show a security advisory. The
-  # retry receipt lives in .next/cache; retry immediately so this is one-shot.
+  # If a future Next advisory pauses a fresh build, retry once. The receipt
+  # lives in .next/cache, so the retry can continue immediately.
   echo "Next paused for its security advisory; retrying the build..."
   run_build
 fi
