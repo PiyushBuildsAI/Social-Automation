@@ -20,35 +20,32 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { requireSession } from "@/lib/session";
 
-const rows: { label: string; hint: string; href: string; icon: ReactNode }[] = [
+const rows: { label: string; hint: string; href?: string; icon: ReactNode }[] = [
   {
     label: "Account & Profile",
     hint: "Manage your profile and details",
-    href: "/settings/account",
     icon: <SettingsIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "Connected Accounts",
     hint: "Instagram, Facebook and more",
-    href: "/settings/accounts",
+    href: "/connect",
     icon: <LinkIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "Automations Settings",
     hint: "Default behavior and preferences",
-    href: "/settings/automations",
+    href: "/automations",
     icon: <BoltIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "Message Settings",
     hint: "Reply style, delays and limits",
-    href: "/settings/messages",
     icon: <ChatIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "Team & Access",
     hint: "Manage team members and roles",
-    href: "/settings/team",
     icon: <UsersIcon className="h-[21px] w-[21px]" />,
   },
   {
@@ -60,19 +57,16 @@ const rows: { label: string; hint: string; href: string; icon: ReactNode }[] = [
   {
     label: "Billing & Plans",
     hint: "Manage subscription and invoices",
-    href: "/settings/billing",
     icon: <CardIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "App Preferences",
     hint: "Theme, language and more",
-    href: "/settings/preferences",
     icon: <SparklesIcon className="h-[21px] w-[21px]" />,
   },
   {
     label: "Help & Support",
     hint: "Get help and contact support",
-    href: "/settings/help",
     icon: <HelpIcon className="h-[21px] w-[21px]" />,
   },
 ];
@@ -112,12 +106,9 @@ export default async function ProfileScreen() {
         </div>
 
         <ul className="mt-4 flex flex-col gap-2">
-          {rows.map((row) => (
-            <li key={row.label}>
-              <Link
-                href={row.href}
-                className="flex items-center gap-3.5 rounded-[20px] border border-line bg-white p-3.5 transition-colors hover:bg-brand-tint"
-              >
+          {rows.map((row) => {
+            const content = (
+              <>
                 <span className="text-ink-soft">{row.icon}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-sans text-[14px] font-bold text-ink">
@@ -127,19 +118,42 @@ export default async function ProfileScreen() {
                     {row.hint}
                   </span>
                 </span>
-                <svg viewBox="0 0 12 16" aria-hidden className="h-4 w-3 text-ink-faint">
-                  <path
-                    d="M2 3l5 5-5 5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
-            </li>
-          ))}
+                {row.href ? (
+                  <svg viewBox="0 0 12 16" aria-hidden className="h-4 w-3 text-ink-faint">
+                    <path
+                      d="M2 3l5 5-5 5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  <span className="rounded-full bg-brand-soft px-2 py-1 font-sans text-[9px] font-extrabold tracking-wide text-brand uppercase">
+                    Soon
+                  </span>
+                )}
+              </>
+            );
+
+            return (
+              <li key={row.label}>
+                {row.href ? (
+                  <Link
+                    href={row.href}
+                    className="flex items-center gap-3.5 rounded-[20px] border border-line bg-white p-3.5 transition-colors hover:bg-brand-tint"
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-3.5 rounded-[20px] border border-line bg-white p-3.5">
+                    {content}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         <InstallPrompt />
