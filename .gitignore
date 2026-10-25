@@ -22,6 +22,7 @@
 
 # mobile release artifacts
 /dist/
+temp_auto_push.bat
 
 # misc
 .DS_Store
@@ -34,7 +35,6 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
 !.env.example
 
 # local auth database
@@ -46,3 +46,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.gitignore
+branch_structure.json
+config.bat
