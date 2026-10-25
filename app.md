@@ -352,10 +352,7 @@ installed AutoMate APK, with the prompt matching the existing AutoMate UI.
   `automate-test` AVD crashes with `SIGSEGV` during startup on this host. The
   external-browser APK download and Android package-install step were not
   exercised on a device.
-- **No release published for v0.3.0 yet.** The latest public release is still
-  `v0.2.0`, so the local v0.3.0 build correctly reports itself as current. The
-  update-available UI was tested with a temporary 0.1.9 bundle against the live
-  v0.2.0 release.
+- **v0.3.0 release.** Published after the verification pass; see Release below.
 - **Pushing code alone does not update an installed APK.** A new signed release
   must be published. `bun run release:apk` does that after the version bump is
   committed and pushed. Automatic release-on-push (GitHub Actions + signing
@@ -372,3 +369,34 @@ installed AutoMate APK, with the prompt matching the existing AutoMate UI.
 - Published `v0.3.0` as the latest GitHub release with
   `automate-v0.3.0.apk` and its checksum.
 - The API check confirms `releases/latest` returns `v0.3.0` with the APK asset.
+
+---
+
+## 2026-10-25 — Next.js 16.4.3 security update (v0.3.1)
+
+**Request.** Upgrade Next.js to the latest patched version and ship it.
+
+### What changed
+
+- `next` and `eslint-config-next` upgraded from `16.4.0` to `16.4.3`.
+- Rebuilt the static mobile export and signed APK with 16.4.3.
+- Bumped to `0.3.1` (`versionCode 4`) so installed v0.3.0 builds can discover
+  this release through the in-app checker.
+- Generalized the build retry comment; 16.4.3 no longer pauses for the 16.4.0
+  security advisory.
+
+### Verification
+
+- `bunx tsc --noEmit` — passes.
+- `bun run lint` — passes.
+- `bun run build` — passes on Next.js 16.4.3 with no advisory pause.
+- `bun run apk` — builds a signed APK:
+  - `dist/automate-v0.3.1.apk`
+  - `versionCode 4`, `versionName 0.3.1`
+  - v1/v2/v3 signatures verify
+  - SHA-256
+    `febec87fd7fbb04cfebb8e0a236f8319434bc4bc93d8678fc93d8cefac2bcfc9`
+
+### Release
+
+- Published `v0.3.1` with the APK and checksum.
