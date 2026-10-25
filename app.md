@@ -267,7 +267,7 @@ in-app notifications only; the phone must not need a server.
 - `apksigner verify` — v1, v2 and v3 signatures verify. `aapt dump badging`
   reports `com.piyushbuildsai.automate`, versionCode 2, versionName 0.2.0.
 - APK size 4.1 MB; SHA-256
-  `a33245a2673f0612a9568efdcf088d06e7bbe6a02402abb3d4979be54447c6d2`.
+  `f9620d0b8a511fb0831d2dca81ce308abc4bf436d17d8959b965618486437732`.
 
 ### Failed / unverified
 
@@ -275,8 +275,6 @@ in-app notifications only; the phone must not need a server.
   `salonpro` AVD crash during boot on this host (QEMU dies even with `-gpu off`
   and Vulkan disabled), and no physical device is attached. The static bundle was
   tested in Chromium, but the APK was not launched on a device.
-- Some Profile settings rows still point at `/settings/*` placeholder routes that
-  do not exist; they are outside this install/notifications scope.
 - **No real push notifications.** The app has an in-app activity feed only. Push
   notifications when the app is closed would need FCM (or web-push) plus a
   backend.

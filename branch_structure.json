@@ -1,0 +1,15 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "main",
+    "mobile-apk"
+  ],
+  "parent": {
+    "main": null,
+    "mobile-apk": "main"
+  },
+  "order": [
+    "main",
+    "mobile-apk"
+  ]
+}
