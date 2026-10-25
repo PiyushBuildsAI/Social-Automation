@@ -189,3 +189,38 @@ and swaps to Leads on `/leads`, matching the reference sheet. Done in
 - `src`-less link previews and menu rows point at `#`.
 - The reference sheet draws a phone frame and iOS status bar around every screen.
   Those are deliberately not implemented.
+
+---
+
+## 2026-10-25 — Production build and first GitHub release (v0.1.0)
+
+**Request.** Build the AutoMate app and publish a runnable build to a GitHub
+release.
+
+### What was built
+
+- `next.config.ts` now sets `output: "standalone"`, so `bun run build` emits a
+  self-contained server at `.next/standalone`.
+- Packaged the standalone server with `public/` and `.next/static/`, a
+  schema-only SQLite auth database (no user rows) and a `RUN.md` with the
+  environment table and PWA install steps.
+- Release asset: `automate-v0.1.0-linux-x64.tar.gz` (Node 20+, Linux x64).
+
+### Verification
+
+- `bun run build` — passes (33 routes generated).
+- Unpacked the artifact and ran `node server.js`:
+  - `/` 200, `/signin` 200, `/manifest.webmanifest` 200
+  - `/api/auth/ok` 200
+  - `POST /api/auth/sign-up/email` 200 against a scratch database, then reset
+    to schema-only.
+- `/home` returns 307 to sign-in when unauthenticated, as designed.
+
+### Still open
+
+- Next.js 16.4.0 reports a security advisory; the build stops once to show the
+  upgrade recommendation. Upgrade before exposing it to untrusted traffic.
+- The artifact is Linux x64 only: `better-sqlite3` and `sharp` ship
+  platform-specific binaries, so rebuild on the target platform for other OSes.
+- There is no APK: AutoMate is a PWA. Install it from the browser with
+  "Add to Home Screen".
