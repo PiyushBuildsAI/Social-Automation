@@ -30,7 +30,7 @@ bun install
 bun run apk        # build static export, sync, compile and sign
 ```
 
-Output: `dist/automate-v0.3.0.apk` plus a `.sha256` file. The release signing key
+Output: `dist/automate-v0.3.1.apk` plus a `.sha256` file. The release signing key
 is kept outside the repo at `~/.android/automate-release.jks` (password in
 `~/.android/automate-release-password`); keep both to publish future updates.
 
