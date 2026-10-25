@@ -53,8 +53,8 @@ const rows: { label: string; hint: string; href: string; icon: ReactNode }[] = [
   },
   {
     label: "Notifications",
-    hint: "Configure alerts and reminders",
-    href: "/settings/notifications",
+    hint: "See your latest activity and alerts",
+    href: "/notifications",
     icon: <BellIcon className="h-[21px] w-[21px]" />,
   },
   {

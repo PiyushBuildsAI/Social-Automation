@@ -9,6 +9,7 @@ import { ArrowRight } from "@/components/icons";
 import { SlashMarks, Squiggle } from "@/components/decorations";
 import { ScreenShell } from "@/components/app/shell";
 import { Sparkle } from "@/components/app/ui";
+import { isMobileDemo } from "@/lib/mobile";
 
 function Smiley({ className }: { className?: string }) {
   return (
@@ -111,7 +112,7 @@ export default function WelcomeScreen() {
 
       <div className="mt-auto pt-8">
         <Link
-          href="/signup"
+          href={isMobileDemo ? "/home" : "/signup"}
           className="flex h-[62px] w-full items-center justify-center gap-3 rounded-full bg-ink font-display text-[20px] font-bold text-white transition-transform active:scale-[0.99]"
         >
           Get Started

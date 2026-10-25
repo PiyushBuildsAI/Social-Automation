@@ -224,3 +224,66 @@ release.
   platform-specific binaries, so rebuild on the target platform for other OSes.
 - There is no APK: AutoMate is a PWA. Install it from the browser with
   "Add to Home Screen".
+
+---
+
+## 2026-10-25 — Android APK (v0.2.0)
+
+**Request.** Package AutoMate as an installable Android APK and publish it to the
+`PiyushBuildsAI/Social-Automation` GitHub release. Scope for this build: install +
+in-app notifications only; the phone must not need a server.
+
+### What was built
+
+- **Capacitor 6.2.2** wrapper in `android/` — app ID
+  `com.piyushbuildsai.automate`, label `AutoMate`, version `0.2.0`
+  (`versionCode 2`), `webDir: out`, HTTPS local scheme.
+- **Offline static export** via `scripts/build-mobile-web.sh`. The script
+  temporarily moves `app/api` and `proxy.ts`, removes the cacheComponents-only
+  `instant` export from `app/layout.tsx`, and builds with
+  `MOBILE_EXPORT=1 MOBILE_DEMO=1 NEXT_PUBLIC_MOBILE_DEMO=1`. It restores
+  everything in an EXIT trap and automatically retries Next's one-time security
+  advisory pause.
+- **Demo session** in `lib/session.ts` plus `lib/mobile.ts`. In the APK,
+  onboarding CTAs, sign-in and sign-up all enter `/home` without touching the
+  missing auth API; the profile action becomes “Back to Home”.
+- **Notifications**: the in-app notification feed at `/notifications` is linked
+  from a bell on Home and from the Notifications row in Profile.
+- **Branding**: adaptive/legacy launcher icons and splash images generated from
+  `public/icons/icon-512.png` and `icon-maskable-512.png`.
+- **Reproducible APK script**: `scripts/build-apk.sh` refreshes the web bundle,
+  runs `cap sync android`, compiles a release APK, zipaligns and signs it, then
+  writes `dist/automate-v0.2.0.apk` and its SHA-256 file.
+
+### Verification
+
+- `bun run lint` — passes (`android/**` added to ESLint ignores because Capacitor
+  copies minified web assets into the project).
+- `bun run build` — passes; the normal standalone web build is unchanged.
+- `bash scripts/build-mobile-web.sh` — exits 0, writes all 32 static routes.
+- Browser check of the export: `/`, `/home`, `/inbox`, `/inbox/priya`,
+  `/notifications`, `/profile`; client-side navigation, Home bell, and demo
+  sign-out label all work with no console errors.
+- `apksigner verify` — v1, v2 and v3 signatures verify. `aapt dump badging`
+  reports `com.piyushbuildsai.automate`, versionCode 2, versionName 0.2.0.
+- APK size 4.1 MB; SHA-256
+  `a33245a2673f0612a9568efdcf088d06e7bbe6a02402abb3d4979be54447c6d2`.
+
+### Failed / unverified
+
+- **No Android runtime test.** Both the new `automate-test` AVD and the existing
+  `salonpro` AVD crash during boot on this host (QEMU dies even with `-gpu off`
+  and Vulkan disabled), and no physical device is attached. The static bundle was
+  tested in Chromium, but the APK was not launched on a device.
+- Some Profile settings rows still point at `/settings/*` placeholder routes that
+  do not exist; they are outside this install/notifications scope.
+- **No real push notifications.** The app has an in-app activity feed only. Push
+  notifications when the app is closed would need FCM (or web-push) plus a
+  backend.
+- The APK uses a demo session: no real login, API, or SQLite database.
+
+### Release
+
+- GitHub release `v0.2.0`, asset `automate-v0.2.0.apk`.
+- Next.js 16.4.0 is affected by a security advisory; upgrade to 16.4.3 before
+  exposing the server build to untrusted traffic.

@@ -20,6 +20,28 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Android APK
+
+The Android build wraps the static Next.js export in Capacitor 6, so the app
+runs entirely from bundled assets (no server or database on the phone).
+
+```bash
+bun install
+bun run apk        # build static export, sync, compile and sign
+```
+
+Output: `dist/automate-v0.2.0.apk` plus a `.sha256` file. The release signing key
+is kept outside the repo at `~/.android/automate-release.jks` (password in
+`~/.android/automate-release-password`); keep both to publish future updates.
+
+`bun run build:mobile-web` builds only the offline web bundle, `bun run cap:sync`
+copies it into `android/`, and `bun run android` opens the project in Android
+Studio.
+
+The APK is a demo: it uses a bundled demo session, has no real login/API/SQLite,
+and its notification feed is in-app only. Real push notifications require an FCM
+(or web-push) backend.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

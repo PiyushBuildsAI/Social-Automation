@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
+import { isMobileDemo } from "@/lib/mobile";
 
 /** Clears the Better Auth session and returns to /signin. */
 export function SignOutButton({ className = "" }: { className?: string }) {
@@ -12,6 +13,11 @@ export function SignOutButton({ className = "" }: { className?: string }) {
 
   const signOut = async () => {
     setBusy(true);
+    // The APK has no auth server; leave the demo by returning to the app home.
+    if (isMobileDemo) {
+      router.push("/home");
+      return;
+    }
     await authClient.signOut();
     router.push("/signin");
     router.refresh();
@@ -24,7 +30,7 @@ export function SignOutButton({ className = "" }: { className?: string }) {
       disabled={busy}
       className={className}
     >
-      {busy ? "Signing out..." : "Log Out"}
+      {busy ? "Signing out..." : isMobileDemo ? "Back to Home" : "Log Out"}
     </button>
   );
 }

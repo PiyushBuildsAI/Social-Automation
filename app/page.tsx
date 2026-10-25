@@ -4,6 +4,7 @@ import { AutoMateLogo } from "@/components/automate-logo";
 import { SlashMarks, Squiggle, UnderlineSwoosh } from "@/components/decorations";
 import { ArrowRight, Bolt, ChevronRight, GrowChart, Wand } from "@/components/icons";
 import { OnboardingIllustration } from "@/components/onboarding-illustration";
+import { isMobileDemo } from "@/lib/mobile";
 
 const features = [
   {
@@ -121,7 +122,7 @@ export default function Home() {
             className="absolute -top-3.5 right-0 h-[19px] w-[35px] text-brand"
           />
           <Link
-            href="/welcome"
+            href={isMobileDemo ? "/home" : "/welcome"}
             className="relative flex h-[62px] w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-brand to-brand-bright font-display text-[20px] font-bold text-white shadow-[0_16px_30px_-12px_rgba(124,58,237,0.75)] transition-transform active:scale-[0.99]"
           >
             Get Started Free
@@ -132,7 +133,7 @@ export default function Home() {
         <p className="mt-[22px] text-center font-sans text-[13.5px] font-semibold text-ink-soft">
           Already have an account?{" "}
           <Link
-            href="/signup"
+            href={isMobileDemo ? "/home" : "/signup"}
             className="font-bold text-brand underline decoration-[1.5px] underline-offset-[3px]"
           >
             Log In

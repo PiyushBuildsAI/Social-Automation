@@ -1,9 +1,10 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { Sparkle } from "@/components/app/ui";
 import { BottomNav } from "@/components/app/bottom-nav";
 import { ScreenShell } from "@/components/app/shell";
 import {
+  BellIcon,
   ChatIcon,
   GaugeIcon,
   BoltIcon,
@@ -40,7 +41,14 @@ export default async function HomeScreen() {
               Your automations are running smoothly.
             </p>
           </div>
-          <Sparkle className="h-6 w-6" />
+          <Link
+            href="/notifications"
+            aria-label="Notifications"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink-soft transition-colors hover:text-brand"
+          >
+            <BellIcon className="h-[21px] w-[21px]" />
+            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-brand" />
+          </Link>
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3">

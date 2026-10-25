@@ -10,6 +10,7 @@ import { Bolt } from "@/components/icons";
 import { ScreenHeader, ScreenShell } from "@/components/app/shell";
 import { MailIcon, LockIcon } from "@/components/app/form-icons";
 import { authClient, devAccount } from "@/lib/auth-client";
+import { isMobileDemo } from "@/lib/mobile";
 import { socialProviderLabels, type SocialProvider } from "@/lib/auth-providers";
 
 type Busy = null | "signin" | "signup" | "dev" | SocialProvider;
@@ -44,6 +45,9 @@ export function SignInForm({
     setBusy(mode);
     setError(null);
 
+    // The APK has no auth server; any credentials enter the bundled demo.
+    if (isMobileDemo) return finish();
+
     if (mode === "signin") {
       const res = await authClient.signIn.email({ email, password });
       if (res.error) return fail(res.error.message ?? "Could not sign you in.");
@@ -67,6 +71,8 @@ export function SignInForm({
     setBusy("dev");
     setError(null);
 
+    if (isMobileDemo) return finish();
+
     const signIn = await authClient.signIn.email({
       email: devAccount.email,
       password: devAccount.password,
@@ -86,6 +92,9 @@ export function SignInForm({
     if (!enabled.includes(provider)) return;
     setBusy(provider);
     setError(null);
+
+    if (isMobileDemo) return finish();
+
     const res = await authClient.signIn.social({ provider, callbackURL: from });
     if (res.error) return fail(res.error.message ?? `Could not sign in with ${provider}.`);
     // OAuth redirects away; the pending state is cleared on failure only.

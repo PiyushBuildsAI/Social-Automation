@@ -10,6 +10,7 @@ import { ScreenHeader, ScreenShell } from "@/components/app/shell";
 import { PrimaryButton, Sparkle } from "@/components/app/ui";
 import { LockIcon, MailIcon, UserIcon } from "@/components/app/form-icons";
 import { authClient } from "@/lib/auth-client";
+import { isMobileDemo } from "@/lib/mobile";
 import { socialProviderLabels, type SocialProvider } from "@/lib/auth-providers";
 
 export function SignUpForm({
@@ -32,6 +33,12 @@ export function SignUpForm({
     setBusy("signup");
     setError(null);
 
+    // No auth server inside the APK; go straight to the demo app.
+    if (isMobileDemo) {
+      router.push("/home");
+      return;
+    }
+
     const res = await authClient.signUp.email({ name, email, password });
     if (res.error) {
       setBusy(null);
@@ -47,6 +54,10 @@ export function SignUpForm({
     if (!enabled.includes(provider)) return;
     setBusy(provider);
     setError(null);
+    if (isMobileDemo) {
+      router.push("/home");
+      return;
+    }
     await authClient.signIn.social({ provider, callbackURL: "/connect" });
   };
 
