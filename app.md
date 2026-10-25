@@ -366,3 +366,9 @@ installed AutoMate APK, with the prompt matching the existing AutoMate UI.
 - The APK opens the downloaded APK in the phone browser; there is no in-app
   native package-installer flow or OTA web-bundle update.
 - Next.js 16.4.0 security advisory remains; a patched 16.4.3 is available.
+
+### Release
+
+- Published `v0.3.0` as the latest GitHub release with
+  `automate-v0.3.0.apk` and its checksum.
+- The API check confirms `releases/latest` returns `v0.3.0` with the APK asset.
